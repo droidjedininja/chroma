@@ -472,7 +472,7 @@ impl<'me> MetadataSegmentWriter<'me> {
             MetadataValue::SparseVector(offset_value) => {
                 match &self.sparse_index_writer {
                     Some(writer) => {
-                        writer.set(offset_id, offset_value.iter().map(|(&i, &v)| (i, v))).await;
+                        writer.set(offset_id, offset_value.iter()).await;
                         Ok(())
                     }
                     None => panic!("Invariant violation. sparse index writer should be set for metadata segment"),
@@ -546,7 +546,7 @@ impl<'me> MetadataSegmentWriter<'me> {
                     }
             MetadataValue::SparseVector(offset_value) => match &self.sparse_index_writer {
                 Some(writer) => {
-                    writer.delete(offset_id, offset_value.keys().cloned()).await;
+                    writer.delete(offset_id, offset_value.indices.iter().cloned()).await;
                     Ok(())
                 }
                     None => panic!("Invariant violation. sparse index writer should be set for metadata segment"),
